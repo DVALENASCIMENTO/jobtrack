@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JobTrack - Controle de Candidaturas</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>JobTrack</h1>
+    <p>Controle suas candidaturas com organização e clareza.</p>
+  </header>
+
+  <section id="config">
+    <label for="metaDiaria">Meta diária:</label>
+    <input type="number" id="metaDiaria" min="1" value="5" />
+    <label for="metaMensal">Meta mensal:</label>
+    <input type="number" id="metaMensal" min="1" value="100" />
+    <button onclick="salvarMeta()">Salvar Metas</button>
+  </section>
+
+  <section>
+    <form id="form">
+      <input type="hidden" id="data" />
+      <input type="text" id="empresa" placeholder="Empresa" required />
+      <input type="text" id="cargo" placeholder="Cargo" required />
+      <input type="url" id="link" placeholder="Link da Vaga" required />
+      <input type="text" id="plataforma" placeholder="Plataforma" required />
+      <select id="status">
+        <option>Enviado</option>
+        <option>Em análise</option>
+        <option>Entrevista marcada</option>
+        <option>Rejeitado</option>
+        <option>Contratado</option>
+      </select>
+      <input type="text" id="retorno" placeholder="Retorno? (Sim/Não)" />
+      <input type="text" id="observacoes" placeholder="Observações" />
+      <button type="submit">Salvar</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Buscar Candidaturas</h2>
+    <input type="text" id="busca" placeholder="Buscar por empresa ou cargo..." />
+  </section>
+
+  <section>
+    <h2>Minhas Candidaturas</h2>
+    <div class="tabela-scroll">
+      <table id="tabela">
+        <thead>
+          <tr>
+            <th>Data</th><th>Empresa</th><th>Cargo</th><th>Link</th><th>Plataforma</th>
+            <th>Status</th><th>Retorno</th><th>Observações</th><th>Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Progresso Diário</h2>
+    <p id="metaStatus"></p>
+    <div id="calendario"></div>
+    <canvas id="graficoMetaDiaria"></canvas>
+  </section>
+
+  <section>
+    <h2>Progresso Mensal</h2>
+    <p id="metaMensalStatus"></p>
+    <canvas id="graficoMetaMensal"></canvas>
+  </section>
+
+  <section>
+    <h2>Estatísticas por Status</h2>
+    <canvas id="graficoStatus"></canvas>
+  </section>
+
+  <div id="toast" class="hidden"></div>
+
+  <footer>
+    <p>Desenvolvido por Diego Vale do Nascimento — <strong>JobTrack</strong></p>
+    <p>
+      <a href="https://www.linkedin.com/in/diego-vale-do-nascimento-48212215b" target="_blank">LinkedIn</a> |
+      <a href="https://github.com/DVALENASCIMENTO" target="_blank">GitHub</a>
+    </p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
