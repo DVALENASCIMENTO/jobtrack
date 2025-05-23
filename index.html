@@ -1,94 +1,170 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JobTrack - Controle de Candidaturas</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Track - Gestão de Candidaturas</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header>
-    <h1>JobTrack</h1>
-    <p>Controle suas candidaturas com organização e clareza.</p>
-  </header>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-briefcase"></i> Job Track</h1>
+            <p id="data-atual"></p>
+        </div>
+    </header>
 
-  <section id="config">
-    <label for="metaDiaria">Meta diária:</label>
-    <input type="number" id="metaDiaria" min="1" value="5" />
-    <label for="metaMensal">Meta mensal:</label>
-    <input type="number" id="metaMensal" min="1" value="100" />
-    <button onclick="salvarMeta()">Salvar Metas</button>
-  </section>
+    <main class="container">
+        <section class="dashboard">
+            <div class="card">
+                <h2>Resumo</h2>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="total-candidaturas">0</span>
+                        <span class="stat-label">Candidaturas</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="total-retornos">0</span>
+                        <span class="stat-label">Retornos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="taxa-retorno">0%</span>
+                        <span class="stat-label">Taxa de Retorno</span>
+                    </div>
+                </div>
+            </div>
 
-  <section>
-    <form id="form">
-      <input type="hidden" id="data" />
-      <input type="text" id="empresa" placeholder="Empresa" required />
-      <input type="text" id="cargo" placeholder="Cargo" required />
-      <input type="url" id="link" placeholder="Link da Vaga" required />
-      <input type="text" id="plataforma" placeholder="Plataforma" required />
-      <select id="status">
-        <option>Enviado</option>
-        <option>Em análise</option>
-        <option>Entrevista marcada</option>
-        <option>Rejeitado</option>
-        <option>Contratado</option>
-      </select>
-      <input type="text" id="retorno" placeholder="Retorno? (Sim/Não)" />
-      <input type="text" id="observacoes" placeholder="Observações" />
-      <button type="submit">Salvar</button>
-    </form>
-  </section>
+            <div class="card">
+                <h2>Metas</h2>
+                <div class="meta-container">
+                    <div class="meta-item">
+                        <label for="meta-diaria">Meta Diária:</label>
+                        <input type="number" id="meta-diaria" min="1" value="5">
+                    </div>
+                    <div class="meta-item">
+                        <label for="meta-mensal">Meta Mensal:</label>
+                        <input type="number" id="meta-mensal" min="1" value="100">
+                    </div>
+                    <div class="meta-item">
+                        <button id="salvar-metas" class="btn btn-primary">Salvar Metas</button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-  <section>
-    <h2>Buscar Candidaturas</h2>
-    <input type="text" id="busca" placeholder="Buscar por empresa ou cargo..." />
-  </section>
+        <section class="graficos">
+            <div class="card">
+                <h2>Progresso</h2>
+                <div class="chart-container">
+                    <canvas id="grafico-candidaturas"></canvas>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Status das Candidaturas</h2>
+                <div class="chart-container">
+                    <canvas id="grafico-status"></canvas>
+                </div>
+            </div>
+        </section>
 
-  <section>
-    <h2>Minhas Candidaturas</h2>
-    <div class="tabela-scroll">
-      <table id="tabela">
-        <thead>
-          <tr>
-            <th>Data</th><th>Empresa</th><th>Cargo</th><th>Link</th><th>Plataforma</th>
-            <th>Status</th><th>Retorno</th><th>Observações</th><th>Ações</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </section>
+        <section class="candidaturas">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Minhas Candidaturas</h2>
+                    <div class="acoes">
+                        <button id="nova-candidatura" class="btn btn-primary"><i class="fas fa-plus"></i> Nova Candidatura</button>
+                        <button id="exportar-backup" class="btn btn-secondary"><i class="fas fa-download"></i> Exportar Backup</button>
+                        <button id="importar-backup" class="btn btn-secondary"><i class="fas fa-upload"></i> Importar Backup</button>
+                        <input type="file" id="arquivo-backup" accept=".json" style="display: none;">
+                    </div>
+                </div>
+                
+                <div class="tabela-container">
+                    <table id="tabela-candidaturas">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Empresa</th>
+                                <th>Cargo</th>
+                                <th>Plataforma</th>
+                                <th>Status</th>
+                                <th>Retorno</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpo-tabela">
+                            <!-- Dados serão inseridos via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
 
-  <section>
-    <h2>Progresso Diário</h2>
-    <p id="metaStatus"></p>
-    <div id="calendario"></div>
-    <canvas id="graficoMetaDiaria"></canvas>
-  </section>
+        <!-- Modal para adicionar/editar candidatura -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modal-titulo">Nova Candidatura</h2>
+                    <span class="fechar">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <form id="form-candidatura">
+                        <input type="hidden" id="id-candidatura">
+                        <div class="form-group">
+                            <label for="empresa">Empresa:</label>
+                            <input type="text" id="empresa" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cargo">Cargo:</label>
+                            <input type="text" id="cargo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="link">Link da Vaga:</label>
+                            <input type="url" id="link">
+                        </div>
+                        <div class="form-group">
+                            <label for="plataforma">Plataforma:</label>
+                            <input type="text" id="plataforma">
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status:</label>
+                            <select id="status">
+                                <option value="Enviada">Enviada</option>
+                                <option value="Em Análise">Em Análise</option>
+                                <option value="Entrevista">Entrevista</option>
+                                <option value="Teste">Teste</option>
+                                <option value="Finalizada">Finalizada</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="retorno">Retorno:</label>
+                            <select id="retorno">
+                                <option value="Não">Não</option>
+                                <option value="Sim">Sim</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="observacoes">Observações:</label>
+                            <textarea id="observacoes"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <button type="button" class="btn btn-secondary cancelar">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
 
-  <section>
-    <h2>Progresso Mensal</h2>
-    <p id="metaMensalStatus"></p>
-    <canvas id="graficoMetaMensal"></canvas>
-  </section>
+    <footer>
+        <div class="container">
+            <p>&copy; <span id="ano-atual"></span> Job Track - Gerenciador de Candidaturas</p>
+        </div>
+    </footer>
 
-  <section>
-    <h2>Estatísticas por Status</h2>
-    <canvas id="graficoStatus"></canvas>
-  </section>
-
-  <div id="toast" class="hidden"></div>
-
-  <footer>
-    <p>Desenvolvido por Diego Vale do Nascimento — <strong>JobTrack</strong></p>
-    <p>
-      <a href="https://www.linkedin.com/in/diego-vale-do-nascimento-48212215b" target="_blank">LinkedIn</a> |
-      <a href="https://github.com/DVALENASCIMENTO" target="_blank">GitHub</a>
-    </p>
-  </footer>
-
-  <script src="js/script.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
