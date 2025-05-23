@@ -25,6 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Configurar eventos
     configurarEventos();
+
+    console.log("Metas carregadas:", metas);
+    console.log("Candidaturas carregadas:", candidaturas);
+
 });
 
 // Função para inicializar o banco de dados IndexedDB
@@ -107,22 +111,23 @@ function carregarMetas() {
 function salvarMetas() {
     const metasDiaria = parseInt(document.getElementById('meta-diaria').value) || 5;
     const metasMensal = parseInt(document.getElementById('meta-mensal').value) || 100;
-    
+
     metas = {
         id: 'metas',
         diaria: metasDiaria,
         mensal: metasMensal
     };
-    
+
     const transaction = db.transaction([STORE_METAS], 'readwrite');
     const store = transaction.objectStore(STORE_METAS);
     const request = store.put(metas);
-    
+
     request.onsuccess = () => {
         mostrarNotificacao('Metas salvas com sucesso!', 'sucesso');
+        localStorage.setItem('jobtrack_metas', JSON.stringify(metas)); // Salva no localStorage também
         atualizarGraficos();
     };
-    
+
     request.onerror = (event) => {
         mostrarNotificacao('Erro ao salvar metas.', 'erro');
         console.error('Erro ao salvar metas:', event.target.error);
@@ -490,19 +495,19 @@ function salvarFormulario() {
         plataforma: document.getElementById('plataforma').value,
         status: document.getElementById('status').value,
         retorno: document.getElementById('retorno').value,
-        observacoes: document.getElementById('observacoes').value,
-        data: new Date().toISOString().split('T')[0]
+        observacoes: document.getElementById('observacoes').value
     };
-    
+
     if (id) {
-        // Edição
         candidatura.id = parseInt(id);
+        const original = candidaturas.find(c => c.id === candidatura.id);
+        candidatura.data = original ? original.data : new Date().toISOString().split('T')[0];
         atualizarCandidatura(candidatura);
     } else {
-        // Nova candidatura
+        candidatura.data = new Date().toISOString().split('T')[0];
         adicionarCandidatura(candidatura);
     }
-    
+
     fecharModal();
 }
 
@@ -628,6 +633,7 @@ function carregarLocalStorage() {
 
 // Função para atualizar data atual
 function atualizarDataAtual() {
+    console.log("Atualizando data atual...");
     const dataAtual = new Date();
     const options = { 
         weekday: 'long', 
